@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// Pacifica Intelligence Terminal - AI-Driven Risk & Alpha Execution Layer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Market State - Real-time market data snapshots
+model MarketState {
+  id                  String   @id @default(cuid())
+  symbol              String   // e.g., "BTC-PERP"
+  price               Float
+  openInterest        Float
+  oiChange5m          Float    // OI change in last 5 minutes (%)
+  fundingRate         Float
+  fundingChange1h     Float    // Funding change in last 1 hour
+  bidVolume           Float    // Total bid volume in orderbook
+  askVolume           Float    // Total ask volume in orderbook
+  liquidationVolume5m Float    // Liquidation volume in last 5 min
+  volatility5m        Float    // 5-minute volatility
+  timestamp           DateTime @default(now())
+  
+  @@index([symbol, timestamp])
+}
+
+// Whale Activity - Large trader detection
+model WhaleActivity {
+  id          String   @id @default(cuid())
+  symbol      String
+  activityType String  // "LONG", "SHORT", "LIQUIDATION"
+  size        Float    // Position size in USD
+  leverage    Float    // Estimated leverage
+  confidence  Float    // Detection confidence 0-100
+  price       Float    // Price at detection
+  timestamp   DateTime @default(now())
+  
+  @@index([symbol, timestamp])
+}
+
+// Alpha Signal - Generated trading signals
+model AlphaSignal {
+  id              String   @id @default(cuid())
+  symbol          String
+  signal          String   // "STRONG_LONG", "LONG", "NEUTRAL", "SHORT", "STRONG_SHORT"
+  alphaScore      Float    // -100 to 100
+  confidence      Float    // 0-100
+  imbalanceScore  Float
+  oiScore         Float
+  fundingScore    Float
+  liquidationScore Float
+  volatilityScore Float
+  timeHorizon     String   // "SHORT", "MEDIUM", "LONG"
+  timestamp       DateTime @default(now())
+  
+  @@index([symbol, timestamp])
+}
+
+// Risk Assessment - Risk metrics
+model RiskAssessment {
+  id                  String   @id @default(cuid())
+  symbol              String
+  liquidationDistance Float    // Distance to liquidation (%)
+  riskScore           Float    // 0-100 (lower is better)
+  volatilityAdjustedStop Float // ATR-based stop price
+  maxSafeLeverage     Float    // Recommended max leverage
+  optimalPositionSize Float    // Recommended position size (% of account)
+  riskToReward        Float    // R:R ratio
+  timestamp           DateTime @default(now())
+  
+  @@index([symbol, timestamp])
+}
+
+// Margin Efficiency - Capital optimization metrics
+model MarginEfficiency {
+  id                    String   @id @default(cuid())
+  symbol                String
+  efficiencyScore       Float    // 0-100
+  expectedReturn        Float    // Expected return %
+  marginRequired        Float    // Margin required
+  capitalUsage          Float    // Current capital usage %
+  liquidationRiskIncrease Float  // Risk increase from new position
+  timestamp             DateTime @default(now())
+  
+  @@index([symbol, timestamp])
+}
+
+// Trade Execution - Auto-executed trades
+model Trade {
+  id            String   @id @default(cuid())
+  symbol        String
+  side          String   // "LONG", "SHORT"
+  size          Float
+  leverage      Float
+  entryPrice    Float
+  exitPrice     Float?
+  status        String   // "PENDING", "OPEN", "CLOSED", "CANCELLED"
+  alphaScore    Float    // Alpha score at execution
+  riskScore     Float    // Risk score at execution
+  efficiencyScore Float  // Efficiency score at execution
+  pnl           Float?   // Profit/Loss
+  timestamp     DateTime @default(now())
+  closedAt      DateTime?
+  
+  @@index([symbol, timestamp])
+}
+
+// System State - Smart mode and configuration
+model SystemState {
+  id            String   @id @default(cuid())
+  smartMode     Boolean  @default(false)
+  autoExecute   Boolean  @default(false)
+  minAlphaScore Float    @default(75)
+  maxRiskScore  Float    @default(40)
+  minEfficiency Float    @default(65)
+  accountBalance Float   @default(10000)
+  lastUpdated   DateTime @updatedAt
+}
