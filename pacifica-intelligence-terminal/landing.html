@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacifica Intelligence Terminal - AI-Powered Trading Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0b1e;
+            color: #ffffff;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .chart-container {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 hero-gradient rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold">Pacifica Intelligence</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="hover:text-purple-400 transition">Features</a>
+                    <a href="#technology" class="hover:text-purple-400 transition">Technology</a>
+                    <a href="#dashboard" class="hover:text-purple-400 transition">Dashboard</a>
+                    <button onclick="scrollToDashboard()" class="hero-gradient px-6 py-2 rounded-full text-white font-semibold hover:opacity-90 transition">
+                        Launch Dashboard
+                    </button>
+                </div>
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 bg-gray-900 z-40 hidden">
+        <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#features" class="text-xl hover:text-purple-400 transition">Features</a>
+            <a href="#technology" class="text-xl hover:text-purple-400 transition">Technology</a>
+            <a href="#dashboard" class="text-xl hover:text-purple-400 transition">Dashboard</a>
+            <button onclick="scrollToDashboard()" class="hero-gradient px-8 py-3 rounded-full text-white font-semibold">
+                Launch Dashboard
+            </button>
+            <button onclick="toggleMobileMenu()" class="text-gray-400">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="container mx-auto text-center">
+            <div class="slide-in">
+                <div class="inline-flex items-center space-x-2 bg-purple-900/30 px-4 py-2 rounded-full mb-6 border border-purple-500/30">
+                    <span class="pulse-dot w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span class="text-sm">System Online • Real-time Processing</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="gradient-text">AI-Driven Trading</span><br>
+                    <span class="text-white">Intelligence Terminal</span>
+                </h1>
+                
+                <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Transform raw perpetual futures data into actionable alpha, risk-aware decisions, and automated execution. 
+                    Institutional-grade tools for the modern trader.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
+                    <button onclick="scrollToDashboard()" class="hero-gradient px-8 py-4 rounded-full text-white font-semibold text-lg hover:opacity-90 transition glow">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Launch Dashboard
+                    </button>
+                    <button onclick="scrollToFeatures()" class="border border-purple-500 px-8 py-4 rounded-full text-white font-semibold text-lg hover:bg-purple-500/20 transition">
+                        <i class="fas fa-play-circle mr-2"></i>
+                        View Demo
+                    </button>
+                </div>
+                
+                <!-- Stats Bar -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
+                        <div class="text-2xl font-bold text-purple-400">94%</div>
+                        <div class="text-sm text-gray-400">Signal Accuracy</div>
+                    </div>
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
+                        <div class="text-2xl font-bold text-purple-400">0.8</div>
+                        <div class="text-sm text-gray-400">Sharpe Ratio</div>
+                    </div>
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
+                        <div class="text-2xl font-bold text-purple-400">5ms</div>
+                        <div class="text-sm text-gray-400">Latency</div>
+                    </div>
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
+                        <div class="text-2xl font-bold text-purple-400">24/7</div>
+                        <div class="text-sm text-gray-400">Operation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">
+                    <span class="gradient-text">Intelligence Engines</span>
+                </h2>
+                <p class="text-xl text-gray-300">Multi-layer analysis for superior trading decisions</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Alpha Engine -->
+                <div class="card-hover bg-gray-800/50 backdrop-blur-sm rounded-xl p-8">
+                    <div class="w-16 h-16 hero-gradient rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Alpha Engine</h3>
+                    <p class="text-gray-300 mb-6">
+                        Real-time signal detection using orderbook imbalance, funding divergence, 
+                        liquidation clusters, and volatility expansion patterns.
+                    </p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Orderbook Imbalance</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Funding Rate Divergence</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Liquidation Clusters</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Volatility Expansion</li>
+                    </ul>
+                </div>
+
+                <!-- Risk Engine -->
+                <div class="card-hover bg-gray-800/50 backdrop-blur-sm rounded-xl p-8">
+                    <div class="w-16 h-16 hero-gradient rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Risk Intelligence</h3>
+                    <p class="text-gray-300 mb-6">
+                        Advanced risk management with liquidation distance calculation, 
+                        dynamic position sizing, and volatility-adjusted stops.
+                    </p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Liquidation Distance</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Dynamic Position Sizing</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Max Safe Leverage</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Risk Scoring</li>
+                    </ul>
+                </div>
+
+                <!-- Margin Engine -->
+                <div class="card-hover bg-gray-800/50 backdrop-blur-sm rounded-xl p-8">
+                    <div class="w-16 h-16 hero-gradient rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-coins text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Margin Efficiency</h3>
+                    <p class="text-gray-300 mb-6">
+                        Optimize capital deployment with efficiency scoring, 
+                        utilization tracking, and risk-adjusted return modeling.
+                    </p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Capital Efficiency</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Margin Utilization</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Portfolio Optimization</li>
+                        <li><i class="fas fa-check text-purple-400 mr-2"></i>Return Modeling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="py-20 px-6 bg-gray-800/30">
+        <div class="container mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">
+                    <span class="gradient-text">Technology Stack</span>
+                </h2>
+                <p class="text-xl text-gray-300">Built for performance, reliability, and scalability</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6">Real-Time Processing Pipeline</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 hero-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bolt text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">WebSocket Integration</h4>
+                                <p class="text-gray-400">Sub-millisecond data ingestion from Pacifica exchanges</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 hero-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">AI-Powered Analysis</h4>
+                                <p class="text-gray-400">Machine learning algorithms for pattern recognition</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 hero-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-robot text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Smart Execution</h4>
+                                <p class="text-gray-400">Automated trading with risk validation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="text-center mb-4">
+                        <h4 class="text-lg font-semibold mb-2">Live Signal Detection</h4>
+                        <p class="text-sm text-gray-400">Real-time alpha signals</p>
+                    </div>
+                    <!-- Simulated Chart -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">BTC-PERP</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-32 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <span class="text-sm text-green-400">85%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">ETH-PERP</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-32 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 72%"></div>
+                                </div>
+                                <span class="text-sm text-yellow-400">72%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">SOL-PERP</span>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-32 bg-gray-700 rounded-full h-2">
+                                    <div class="bg-red-500 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <span class="text-sm text-red-400">45%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section id="dashboard" class="py-20 px-6">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-4">
+                <span class="gradient-text">Live Dashboard</span>
+            </h2>
+            <p class="text-xl text-gray-300 mb-12">Experience the power of AI-driven trading intelligence</p>
+            
+            <!-- Dashboard Preview Card -->
+            <div class="max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-600">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400">Alpha Signals</span>
+                            <span class="pulse-dot w-2 h-2 bg-green-400 rounded-full"></span>
+                        </div>
+                        <div class="text-3xl font-bold text-green-400">12</div>
+                        <div class="text-sm text-gray-500">Active signals</div>
+                    </div>
+                    <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-600">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400">Risk Score</span>
+                            <span class="pulse-dot w-2 h-2 bg-yellow-400 rounded-full"></span>
+                        </div>
+                        <div class="text-3xl font-bold text-yellow-400">0.45</div>
+                        <div class="text-sm text-gray-500">Medium risk</div>
+                    </div>
+                    <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-600">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400">Efficiency</span>
+                            <span class="pulse-dot w-2 h-2 bg-purple-400 rounded-full"></span>
+                        </div>
+                        <div class="text-3xl font-bold text-purple-400">87%</div>
+                        <div class="text-sm text-gray-500">Optimization score</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-600 mb-8">
+                    <h3 class="text-lg font-semibold mb-4">Recent Trading Decisions</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span>BTC-PERP</span>
+                                <span class="text-sm text-gray-400">Enter Long</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-green-400">+2.3%</span>
+                                <span class="text-sm text-gray-500 ml-2">2 min ago</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-2 bg-red-400 rounded-full"></div>
+                                <span>ETH-PERP</span>
+                                <span class="text-sm text-gray-400">Exit Short</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-green-400">+1.8%</span>
+                                <span class="text-sm text-gray-500 ml-2">5 min ago</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                <span>SOL-PERP</span>
+                                <span class="text-sm text-gray-400">Adjust Position</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-400">Pending</span>
+                                <span class="text-sm text-gray-500 ml-2">8 min ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="launchDashboard()" class="hero-gradient px-8 py-4 rounded-full text-white font-semibold text-lg hover:opacity-90 transition w-full md:w-auto">
+                    <i class="fas fa-external-link-alt mr-2"></i>
+                    Launch Full Dashboard
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6">
+        <div class="container mx-auto text-center">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold mb-6">
+                    <span class="gradient-text">Ready to Transform Your Trading?</span>
+                </h2>
+                <p class="text-xl text-gray-300 mb-8">
+                    Join traders worldwide using AI-powered intelligence to gain an edge in the markets.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button onclick="launchDashboard()" class="hero-gradient px-8 py-4 rounded-full text-white font-semibold text-lg hover:opacity-90 transition">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Start Trading Now
+                    </button>
+                    <button onclick="showDocumentation()" class="border border-purple-500 px-8 py-4 rounded-full text-white font-semibold text-lg hover:bg-purple-500/20 transition">
+                        <i class="fas fa-book mr-2"></i>
+                        View Documentation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-800">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-sm"></i>
+                    </div>
+                    <span class="text-lg font-semibold">Pacifica Intelligence Terminal</span>
+                </div>
+                <div class="flex items-center space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-purple-400 transition">Documentation</a>
+                    <a href="#" class="hover:text-purple-400 transition">API</a>
+                    <a href="#" class="hover:text-purple-400 transition">Support</a>
+                    <a href="#" class="hover:text-purple-400 transition">Discord</a>
+                </div>
+            </div>
+            <div class="text-center mt-8 text-gray-500 text-sm">
+                © 2024 Pacifica Intelligence Terminal. Built for the future of trading.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth scrolling
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToTechnology() {
+            document.getElementById('technology').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToDashboard() {
+            document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Launch dashboard (redirect to actual dashboard)
+        function launchDashboard() {
+            // In production, this would redirect to the actual dashboard
+            window.open('/dashboard', '_blank');
+        }
+
+        // Show documentation
+        function showDocumentation() {
+            window.open('/docs', '_blank');
+        }
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('slide-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Simulate real-time data updates
+        setInterval(() => {
+            // Update signal percentages randomly
+            const signals = document.querySelectorAll('.bg-green-500, .bg-yellow-500, .bg-red-500');
+            signals.forEach(signal => {
+                if (Math.random() > 0.7) {
+                    const currentWidth = parseInt(signal.style.width);
+                    const change = Math.floor(Math.random() * 10) - 5;
+                    const newWidth = Math.max(20, Math.min(95, currentWidth + change));
+                    signal.style.width = newWidth + '%';
+                }
+            });
+        }, 3000);
+
+        // Add floating animation to hero elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroElements = document.querySelectorAll('.hero-gradient');
+            heroElements.forEach(el => {
+                el.classList.add('floating');
+            });
+        });
+    </script>
+</body>
+</html>

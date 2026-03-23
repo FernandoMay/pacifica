@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacifica Intelligence Terminal - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0b1e;
+            color: #ffffff;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .card:hover {
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .signal-positive {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .signal-negative {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .signal-neutral {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .status-online {
+            color: #10b981;
+        }
+        
+        .status-warning {
+            color: #f59e0b;
+        }
+        
+        .status-offline {
+            color: #ef4444;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 3px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    
+    <!-- Header -->
+    <header class="bg-gray-800/80 backdrop-blur-md border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-sm"></i>
+                        </div>
+                        <span class="text-lg font-bold">Pacifica Terminal</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="pulse-dot w-2 h-2 bg-green-400 rounded-full"></span>
+                        <span class="text-sm text-green-400">System Online</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-400">
+                        <span id="currentTime">--:--:--</span>
+                    </div>
+                    <button onclick="toggleAutoExecution()" id="autoExecutionBtn" class="px-4 py-2 rounded-lg border border-gray-600 text-sm hover:bg-gray-700 transition">
+                        <i class="fas fa-robot mr-2"></i>
+                        <span id="autoExecutionText">Auto Mode: OFF</span>
+                    </button>
+                    <button onclick="showSettings()" class="p-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-4 py-6">
+        
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-400 text-sm">Active Signals</span>
+                    <i class="fas fa-chart-line text-purple-400"></i>
+                </div>
+                <div class="text-2xl font-bold" id="activeSignals">12</div>
+                <div class="text-xs text-gray-500">+3 from last hour</div>
+            </div>
+            
+            <div class="card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-400 text-sm">Risk Score</span>
+                    <i class="fas fa-shield-alt text-yellow-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-yellow-400" id="riskScore">0.45</div>
+                <div class="text-xs text-gray-500">Medium Risk</div>
+            </div>
+            
+            <div class="card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-400 text-sm">Margin Efficiency</span>
+                    <i class="fas fa-coins text-green-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-green-400" id="marginEfficiency">87%</div>
+                <div class="text-xs text-gray-500">Optimal</div>
+            </div>
+            
+            <div class="card rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-400 text-sm">24h P&L</span>
+                    <i class="fas fa-dollar-sign text-blue-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-green-400" id="pnl24h">+$2,847</div>
+                <div class="text-xs text-gray-500">+3.2%</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Column - Alpha Signals -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Alpha Signals -->
+                <div class="card rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Alpha Signals</h3>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="refreshSignals()" class="p-2 rounded hover:bg-gray-700 transition">
+                                <i class="fas fa-sync-alt text-sm"></i>
+                            </button>
+                            <select class="bg-gray-700 text-sm rounded px-2 py-1" onchange="filterSignals(this.value)">
+                                <option value="all">All Signals</option>
+                                <option value="high">High Confidence</option>
+                                <option value="recent">Recent</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 max-h-96 overflow-y-auto scrollbar-thin" id="signalsContainer">
+                        <!-- Signals will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="card rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Performance Overview</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="switchChart('performance')" class="chart-btn px-3 py-1 text-sm rounded bg-purple-600 text-white">Performance</button>
+                            <button onclick="switchChart('signals')" class="chart-btn px-3 py-1 text-sm rounded bg-gray-700 text-gray-300">Signals</button>
+                            <button onclick="switchChart('risk')" class="chart-btn px-3 py-1 text-sm rounded bg-gray-700 text-gray-300">Risk</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Risk & Positions -->
+            <div class="space-y-6">
+                
+                <!-- Risk Metrics -->
+                <div class="card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Risk Metrics</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Portfolio Risk</span>
+                                <span id="portfolioRiskValue">45%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div id="portfolioRiskBar" class="bg-yellow-400 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Liquidation Distance</span>
+                                <span id="liquidationDistanceValue">12.5%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div id="liquidationDistanceBar" class="bg-green-400 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Leverage Usage</span>
+                                <span id="leverageUsageValue">3.2x</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div id="leverageUsageBar" class="bg-blue-400 h-2 rounded-full" style="width: 32%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-gray-800 rounded">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-400">Max Safe Leverage</span>
+                            <span class="text-sm font-semibold text-green-400">6.8x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Positions -->
+                <div class="card rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Active Positions</h3>
+                        <span class="text-sm text-gray-400" id="positionCount">3 positions</span>
+                    </div>
+                    
+                    <div class="space-y-3" id="positionsContainer">
+                        <!-- Positions will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                    <div class="space-y-3 max-h-48 overflow-y-auto scrollbar-thin" id="activityContainer">
+                        <!-- Activity will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let autoExecutionEnabled = false;
+        let currentChart = null;
+        let currentChartType = 'performance';
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboard();
+            startRealTimeUpdates();
+        });
+
+        function initializeDashboard() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            loadSignals();
+            loadPositions();
+            loadActivity();
+            initializeChart();
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour12: false });
+        }
+
+        function startRealTimeUpdates() {
+            // Update metrics every 5 seconds
+            setInterval(() => {
+                updateMetrics();
+                updateSignals();
+                updatePositions();
+            }, 5000);
+        }
+
+        function updateMetrics() {
+            // Simulate metric updates
+            const activeSignals = document.getElementById('activeSignals');
+            const currentSignals = parseInt(activeSignals.textContent);
+            const change = Math.floor(Math.random() * 5) - 2;
+            activeSignals.textContent = Math.max(8, Math.min(20, currentSignals + change));
+
+            // Update risk score
+            const riskScore = document.getElementById('riskScore');
+            const currentRisk = parseFloat(riskScore.textContent);
+            const riskChange = (Math.random() - 0.5) * 0.1;
+            riskScore.textContent = Math.max(0.1, Math.min(0.9, currentRisk + riskChange)).toFixed(2);
+
+            // Update P&L
+            const pnl = document.getElementById('pnl24h');
+            const currentPnl = parseInt(pnl.textContent.replace(/[^0-9-]/g, ''));
+            const pnlChange = Math.floor(Math.random() * 200) - 100;
+            const newPnl = currentPnl + pnlChange;
+            pnl.textContent = (newPnl >= 0 ? '+$' : '-$') + Math.abs(newPnl).toLocaleString();
+            pnl.className = `text-2xl font-bold ${newPnl >= 0 ? 'text-green-400' : 'text-red-400'}`;
+        }
+
+        function loadSignals() {
+            const signals = [
+                {
+                    symbol: 'BTC-PERP',
+                    type: 'orderbook_imbalance',
+                    strength: 0.85,
+                    direction: 'long',
+                    confidence: 0.92,
+                    description: 'Strong bid imbalance detected',
+                    timestamp: Date.now() - 120000
+                },
+                {
+                    symbol: 'ETH-PERP',
+                    type: 'funding_divergence',
+                    strength: 0.72,
+                    direction: 'short',
+                    confidence: 0.78,
+                    description: 'High funding rate suggests short opportunity',
+                    timestamp: Date.now() - 300000
+                },
+                {
+                    symbol: 'SOL-PERP',
+                    type: 'volatility_expansion',
+                    strength: 0.68,
+                    direction: 'neutral',
+                    confidence: 0.65,
+                    description: 'Volatility expanding, monitor closely',
+                    timestamp: Date.now() - 450000
+                },
+                {
+                    symbol: 'AVAX-PERP',
+                    type: 'liquidation_cluster',
+                    strength: 0.91,
+                    direction: 'short',
+                    confidence: 0.88,
+                    description: 'Liquidation cluster detected',
+                    timestamp: Date.now() - 600000
+                }
+            ];
+
+            const container = document.getElementById('signalsContainer');
+            container.innerHTML = signals.map(signal => createSignalHTML(signal)).join('');
+        }
+
+        function createSignalHTML(signal) {
+            const directionClass = signal.direction === 'long' ? 'signal-positive' : 
+                                 signal.direction === 'short' ? 'signal-negative' : 'signal-neutral';
+            const directionIcon = signal.direction === 'long' ? 'fa-arrow-up' : 
+                                signal.direction === 'short' ? 'fa-arrow-down' : 'fa-minus';
+            
+            return `
+                <div class="p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="font-semibold">${signal.symbol}</span>
+                            <span class="px-2 py-1 rounded text-xs ${directionClass}">
+                                <i class="fas ${directionIcon} mr-1"></i>
+                                ${signal.direction.toUpperCase()}
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-semibold">${(signal.confidence * 100).toFixed(0)}%</div>
+                            <div class="text-xs text-gray-500">confidence</div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-400 mb-2">${signal.description}</div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4 text-xs text-gray-500">
+                            <span><i class="fas fa-chart-line mr-1"></i>${(signal.strength * 100).toFixed(0)}% strength</span>
+                            <span><i class="fas fa-clock mr-1"></i>${formatTime(signal.timestamp)}</span>
+                        </div>
+                        <button onclick="executeSignal('${signal.symbol}')" class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition">
+                            Execute
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadPositions() {
+            const positions = [
+                {
+                    symbol: 'BTC-PERP',
+                    side: 'long',
+                    size: 0.5,
+                    entryPrice: 43250,
+                    markPrice: 44120,
+                    pnl: 435.50,
+                    pnlPercent: 2.01
+                },
+                {
+                    symbol: 'ETH-PERP',
+                    side: 'short',
+                    size: 5.2,
+                    entryPrice: 2280,
+                    markPrice: 2245,
+                    pnl: 182.00,
+                    pnlPercent: 1.53
+                },
+                {
+                    symbol: 'SOL-PERP',
+                    side: 'long',
+                    size: 100,
+                    entryPrice: 98.50,
+                    markPrice: 96.80,
+                    pnl: -170.00,
+                    pnlPercent: -1.73
+                }
+            ];
+
+            const container = document.getElementById('positionsContainer');
+            container.innerHTML = positions.map(position => createPositionHTML(position)).join('');
+            
+            document.getElementById('positionCount').textContent = `${positions.length} positions`;
+        }
+
+        function createPositionHTML(position) {
+            const pnlClass = position.pnl >= 0 ? 'text-green-400' : 'text-red-400';
+            const sideClass = position.side === 'long' ? 'signal-positive' : 'signal-negative';
+            
+            return `
+                <div class="p-3 bg-gray-800 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold">${position.symbol}</span>
+                            <span class="px-2 py-1 rounded text-xs ${sideClass}">
+                                ${position.side.toUpperCase()}
+                            </span>
+                        </div>
+                        <span class="${pnlClass} font-semibold">
+                            ${position.pnl >= 0 ? '+' : ''}$${Math.abs(position.pnl).toFixed(2)}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-400">
+                        <div>Size: ${position.size}</div>
+                        <div>Entry: $${position.entryPrice}</div>
+                        <div>Mark: $${position.markPrice}</div>
+                        <div class="${pnlClass}">${position.pnlPercent >= 0 ? '+' : ''}${position.pnlPercent.toFixed(2)}%</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadActivity() {
+            const activities = [
+                { type: 'signal', message: 'New alpha signal for BTC-PERP', timestamp: Date.now() - 120000 },
+                { type: 'execution', message: 'Executed long position on ETH-PERP', timestamp: Date.now() - 300000 },
+                { type: 'risk', message: 'Risk score updated to 0.45', timestamp: Date.now() - 450000 },
+                { type: 'signal', message: 'Liquidation cluster detected on AVAX-PERP', timestamp: Date.now() - 600000 }
+            ];
+
+            const container = document.getElementById('activityContainer');
+            container.innerHTML = activities.map(activity => createActivityHTML(activity)).join('');
+        }
+
+        function createActivityHTML(activity) {
+            const iconClass = activity.type === 'signal' ? 'fa-chart-line text-purple-400' :
+                            activity.type === 'execution' ? 'fa-play text-green-400' :
+                            'fa-shield-alt text-yellow-400';
+            
+            return `
+                <div class="flex items-start space-x-3 p-2 bg-gray-800 rounded">
+                    <i class="fas ${iconClass} mt-1"></i>
+                    <div class="flex-1">
+                        <div class="text-sm">${activity.message}</div>
+                        <div class="text-xs text-gray-500">${formatTime(activity.timestamp)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            
+            return `${Math.floor(hours / 24)}d ago`;
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [100000, 101200, 100800, 102500, 103800, 102900, 104200],
+                        borderColor: 'rgb(102, 126, 234)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchChart(type) {
+            // Update button styles
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.add('bg-gray-700', 'text-gray-300');
+            });
+            event.target.classList.remove('bg-gray-700', 'text-gray-300');
+            event.target.classList.add('bg-purple-600', 'text-white');
+
+            // Update chart data based on type
+            currentChartType = type;
+            updateChartData(type);
+        }
+
+        function updateChartData(type) {
+            if (!currentChart) return;
+
+            let newData, newLabel;
+
+            switch(type) {
+                case 'signals':
+                    newLabel = 'Signal Strength';
+                    newData = [65, 72, 68, 85, 78, 82, 79];
+                    break;
+                case 'risk':
+                    newLabel = 'Risk Score';
+                    newData = [0.3, 0.35, 0.42, 0.38, 0.45, 0.41, 0.44];
+                    break;
+                default:
+                    newLabel = 'Portfolio Value';
+                    newData = [100000, 101200, 100800, 102500, 103800, 102900, 104200];
+            }
+
+            currentChart.data.datasets[0].label = newLabel;
+            currentChart.data.datasets[0].data = newData;
+            currentChart.update();
+        }
+
+        function toggleAutoExecution() {
+            autoExecutionEnabled = !autoExecutionEnabled;
+            const btn = document.getElementById('autoExecutionBtn');
+            const text = document.getElementById('autoExecutionText');
+            
+            if (autoExecutionEnabled) {
+                btn.classList.remove('border-gray-600');
+                btn.classList.add('bg-green-600', 'border-green-600');
+                text.textContent = 'Auto Mode: ON';
+            } else {
+                btn.classList.add('border-gray-600');
+                btn.classList.remove('bg-green-600', 'border-green-600');
+                text.textContent = 'Auto Mode: OFF';
+            }
+        }
+
+        function refreshSignals() {
+            loadSignals();
+            // Show refresh animation
+            event.target.classList.add('animate-spin');
+            setTimeout(() => {
+                event.target.classList.remove('animate-spin');
+            }, 1000);
+        }
+
+        function filterSignals(filter) {
+            // In production, this would filter the actual signals
+            console.log('Filtering signals:', filter);
+        }
+
+        function executeSignal(symbol) {
+            if (autoExecutionEnabled) {
+                showNotification(`Executing signal for ${symbol}...`, 'success');
+            } else {
+                showNotification(`Auto-execution disabled. Enable to execute ${symbol} signal.`, 'warning');
+            }
+        }
+
+        function showSettings() {
+            showNotification('Settings panel coming soon!', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-600' :
+                type === 'warning' ? 'bg-yellow-600' :
+                type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+            } text-white`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas ${
+                        type === 'success' ? 'fa-check-circle' :
+                        type === 'warning' ? 'fa-exclamation-triangle' :
+                        type === 'error' ? 'fa-times-circle' : 'fa-info-circle'
+                    }"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function updateSignals() {
+            // Simulate signal updates
+            const signals = document.querySelectorAll('#signalsContainer > div');
+            if (signals.length > 0 && Math.random() > 0.7) {
+                // Add new signal
+                const newSignal = {
+                    symbol: ['BTC-PERP', 'ETH-PERP', 'SOL-PERP', 'AVAX-PERP'][Math.floor(Math.random() * 4)],
+                    type: 'volume_spike',
+                    strength: Math.random(),
+                    direction: Math.random() > 0.5 ? 'long' : 'short',
+                    confidence: Math.random(),
+                    description: 'New signal detected',
+                    timestamp: Date.now()
+                };
+                
+                const container = document.getElementById('signalsContainer');
+                const newSignalHTML = createSignalHTML(newSignal);
+                container.insertAdjacentHTML('afterbegin', newSignalHTML);
+                
+                // Remove oldest signal if too many
+                if (signals.length > 10) {
+                    signals[signals.length - 1].remove();
+                }
+            }
+        }
+
+        function updatePositions() {
+            // Simulate price updates for positions
+            const positions = document.querySelectorAll('#positionsContainer > div');
+            positions.forEach(position => {
+                if (Math.random() > 0.8) {
+                    // Update P&L slightly
+                    const pnlElement = position.querySelector('.text-green-400, .text-red-400');
+                    if (pnlElement) {
+                        const currentPnl = parseFloat(pnlElement.textContent.replace(/[^0-9.-]/g, ''));
+                        const change = (Math.random() - 0.5) * 20;
+                        const newPnl = currentPnl + change;
+                        pnlElement.textContent = `${newPnl >= 0 ? '+' : ''}$${Math.abs(newPnl).toFixed(2)}`;
+                        pnlElement.className = `font-semibold ${newPnl >= 0 ? 'text-green-400' : 'text-red-400'}`;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
