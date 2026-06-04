@@ -146,7 +146,7 @@ export class AlphaEngine {
 
     // Calculate recent volatility
     const recentPrices = prices.slice(-this.VOLATILITY_WINDOW);
-    const returns = [];
+    const returns: number[] = [];
     
     for (let i = 1; i < recentPrices.length; i++) {
       returns.push((recentPrices[i] - recentPrices[i-1]) / recentPrices[i-1]);
@@ -160,7 +160,7 @@ export class AlphaEngine {
     const historicalPrices = prices.slice(-100, -this.VOLATILITY_WINDOW);
     if (historicalPrices.length < this.VOLATILITY_WINDOW) return null;
 
-    const historicalReturns = [];
+    const historicalReturns: number[] = [];
     for (let i = 1; i < historicalPrices.length; i++) {
       historicalReturns.push((historicalPrices[i] - historicalPrices[i-1]) / historicalPrices[i-1]);
     }

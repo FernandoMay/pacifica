@@ -96,7 +96,7 @@ interface SystemState {
 
 // ==================== MARKET DATA ENGINE ====================
 class MarketDataEngine {
-  private symbols = ['BTC-PERP', 'ETH-PERP', 'SOL-PERP']
+  symbols = ['BTC-PERP', 'ETH-PERP', 'SOL-PERP']
   private marketStates: Map<string, MarketState> = new Map()
   private priceHistory: Map<string, number[]> = new Map()
   private oiHistory: Map<string, number[]> = new Map()

@@ -208,7 +208,7 @@ export class MarginEfficiencyEngine {
     expectedReturn: number;
     riskScore: number;
   }> {
-    const allocations = [];
+    const allocations: Array<{symbol: string; side: 'long' | 'short'; size: number; leverage: number; marginUsed: number}> = [];
     let remainingMargin = availableMargin;
     let totalExpectedReturn = 0;
     let totalRiskScore = 0;

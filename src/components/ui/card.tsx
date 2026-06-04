@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+function CardComponent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
@@ -80,6 +80,15 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
+
+const Card = Object.assign(CardComponent, {
+  Header: CardHeader,
+  Title: CardTitle,
+  Description: CardDescription,
+  Action: CardAction,
+  Content: CardContent,
+  Footer: CardFooter,
+})
 
 export {
   Card,

@@ -180,4 +180,5 @@ if (require.main === module) {
   }
 }
 
-export { PacificaIntelligenceTerminal, PacificaConfig };
+export { PacificaIntelligenceTerminal };
+export type { PacificaConfig };

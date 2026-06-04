@@ -25,6 +25,7 @@ export interface OrderBook {
 }
 
 export interface Liquidation {
+  symbol: string;
   price: number;
   size: number;
   side: 'long' | 'short';
