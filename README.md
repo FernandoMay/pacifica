@@ -1,4 +1,4 @@
-# Pacifica Intelligence Terminal
+﻿# Pacifica Intelligence Terminal
 
 🧠 **AI-driven intelligence layer for Pacifica perpetual futures trading**
 
